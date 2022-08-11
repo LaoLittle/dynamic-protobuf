@@ -1,7 +1,16 @@
 [package]
 name = "dynamic-protobuf"
 version = "0.1.0"
+authors = ["LaoLittle"]
+description = "Dynamically serialize protobuf message"
+readme = "README.md"
+keywords = [
+    "protobuf",
+    "dynamic-message",
+]
+license = "AGPLv3"
 edition = "2021"
+repository = "https://github.com/LaoLittle/dynamic-protobuf"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
