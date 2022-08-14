@@ -3,7 +3,7 @@ pub mod macros;
 use std::collections::HashMap;
 use std::default::Default;
 
-use bytes::{Bytes, BytesMut};
+use bytes::{Bytes};
 
 #[derive(Default)]
 pub struct DynamicMessage {
@@ -17,6 +17,21 @@ impl DynamicMessage {
 
     pub fn encode(self) -> Bytes {
         let mut encoder = DynamicMessageEncoder::new();
+
+        self._encode(&mut encoder);
+
+        encoder.into_bytes()
+    }
+
+    pub fn encode_to_vec(self) -> Vec<u8> {
+        let mut encoder = DynamicMessageEncoder::new();
+
+        self._encode(&mut encoder);
+
+        encoder.into_vec()
+    }
+
+    fn _encode(self,encoder: &mut DynamicMessageEncoder) {
         for (id, msg) in self.inner {
             let key = id << 3;
 
@@ -50,8 +65,6 @@ impl DynamicMessage {
                 }
             }
         }
-
-        encoder.into_bytes()
     }
 
     pub fn set<M: Into<DynamicMessageNode>>(&mut self, k: u64, v: M) {
@@ -60,7 +73,7 @@ impl DynamicMessage {
 }
 
 struct DynamicMessageEncoder {
-    buf: BytesMut,
+    buf: Vec<u8>,
 }
 
 impl DynamicMessageEncoder {
@@ -70,7 +83,7 @@ impl DynamicMessageEncoder {
 
     pub fn new() -> Self {
         Self {
-            buf: BytesMut::new(),
+            buf: Vec::new(),
         }
     }
 
@@ -93,7 +106,11 @@ impl DynamicMessageEncoder {
     }
 
     pub fn into_bytes(self) -> Bytes {
-        self.buf.freeze()
+        Bytes::from(self.buf)
+    }
+
+    pub fn into_vec(self) -> Vec<u8> {
+        self.buf
     }
 }
 
